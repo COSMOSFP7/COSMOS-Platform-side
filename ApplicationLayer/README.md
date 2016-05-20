@@ -1,12 +1,9 @@
-# Platform-side
+# Application Layer
 
-By platform side, we indicate services or components that are expected to be hosted/run within a centralized platform oriented solution
-(e.g. IBM Bluemix) or other Cloud solution.
+As Application Layer we denote a middleware layer based on Node-RED that connects the platform generated events (or other types of services) with some concrete application logic.
 
-This side is typical of not having the constraints found in IoT devices and is able to scale, manage large quantities of data and perform
-other time and resource demanding operations.
+In the specific example, we have events generated for the traffic state of the city of Madrid in various measurement points (PMs) that indicate the state of the traffic (good/bad). Thus an application layer may receive as input a user location in GPS lat lon coordinates and check the distance between the user and the respective measurement point. If this distance is smaller than a given radius,
+an alarm is triggered that can be directed to whatever kind of output (e.g. mobilde device again).
 
-The existence of such services enables the Things side to offload part of their functionality and typically the majority (if not all) of
-their data in an aggregated data management solution such as a database, Cloud object storage solution etc.
 
 
