@@ -1,0 +1,154 @@
+/* 
+	SOL/CEP 
+	Copyright (c) Atos S.A.
+	Research & Innovation - Smart Objects Lab
+	All Rights Reserved.
+	
+	ATOS PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+*/
+
+external int TEMP_ALERT = 39;
+external duration T_WINDOW = 10 seconds;
+external int umbral01 = 21;
+
+/*
+event SignalEMT
+{
+    use
+    {
+        int stopId,
+        int lineId,
+        int isHead,
+        int busId,
+        int busTimeLeft,
+        int busDistance,
+        int busPositionType,
+	string incidenceDesc,
+	int incidence
+    };
+
+    accept { stopId > 0 };
+}
+
+
+complex IncidenceInBus
+{
+	payload {
+	  int BusId = busId,
+	  int StopId = stopId,
+	  int LineId = lineId,
+	  string IncidenceDesc = incidenceDesc
+   	};
+
+        detect SignalEMT
+		where incidence == 1;
+}
+
+
+complex BusEndingRoute
+{
+	payload {
+	  int BusId = busId,
+	  int LineId = lineId,
+	  int StopId = stopId
+   	};
+
+        detect SignalEMT
+		where isHead == 1 && (busDistance == 0 || busTimeLeft == 0);
+}
+
+
+complex BusStartingRoute
+{
+	payload {
+	  int BusId = busId,
+	  int LineId = lineId,
+	  int StopId = stopId
+   	};
+
+        detect SignalEMT
+		where isHead == 1 && (busDistance < 0 || busTimeLeft < 0);
+}
+
+
+complex ArriveToSpecificStop
+{
+	payload {
+	  int BusId = busId,
+	  int LineId = lineId,
+	  int StopId = stopId,
+	  int UMBRAL01 = umbral01,
+	  int Distance = busDistance
+   	};
+
+        detect SignalEMT
+		where ( ( stopId == 31 || stopId == 41 || stopId == 72 || stopId == 65 || stopId == 49 ) && busDistance <= umbral01 );
+}
+
+
+complex CriticalDeviation
+{
+	payload {
+	  int BusId = busId,
+	  int LineId = lineId,
+	  int StopId = stopId,
+	  int BusDistance = busDistance,
+	  int BusTimeLeft = busTimeLeft
+   	};
+
+        detect SignalEMT
+		where ( busTimeLeft > 300 && busDistance < 100 && isHead != 1 );
+}
+
+
+complex LongTimeToArrive
+{
+	payload {
+	  int BusId = busId,
+	  int LineId = lineId,
+	  int StopId = stopId,
+	  int BusTimeLeft = busTimeLeft
+   	};
+
+        detect SignalEMT
+		where ( ( busId == 5251 || busId == 8269 ) && busTimeLeft > 200000 && count(SignalEMT) > 20 ) in [3600 seconds];
+}
+
+*/
+
+event temperature
+{
+    use
+    {
+        int sensor_id,
+        int value
+    };
+
+    accept { value > 39 };
+}
+
+complex SiempreActivo
+{
+	payload {
+	  int SensorID = sensor_id,
+	  int Valor = value
+   	};
+
+        detect temperature;
+}
+
+
+complex Calooooooor
+{
+//	group sensor_id;
+	payload {
+	  int SENSORID = sensor_id,
+	  int Valor = value
+   	};
+
+        detect temperature
+		where (count(temperature) > 1) in [T_WINDOW];
+
+}
+
+

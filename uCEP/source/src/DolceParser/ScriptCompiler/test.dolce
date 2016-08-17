@@ -1,0 +1,113 @@
+/**
+  Copyright (C) 2016 ATOS
+ 
+    This file is part of BCEP.
+
+    BCEP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    BCEP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with BCEP.  If not, see <http://www.gnu.org/licenses/>.
+ 
+  Authors:
+  ATOS ARI
+  
+ */
+
+external time WINDOW  =  12:12:12;
+
+
+
+complex Alarm
+{
+	payload 
+	{
+		int bla = 45,
+		int bli = 3344,
+		int bla = 333
+	};
+	
+	group CustomerId;
+	
+//	detect (a or b and c or q) or z
+	detect aaa after bbb after ccc;
+	
+	detect (a or b or c)
+	or ATMWithdrawal	
+	where a.a + sum(Withdrawal.Amount) > TOTAL_AMOUNT
+	in [ WINDOW ];
+}
+
+
+complex PurchaseAlarm
+{
+	group CreditCardNumber;
+	
+	// Change $ -> @ ?
+	detect Purchase
+//	where count(Purchase) >= 2 && (Purchae@12 . x == Purchase)
+//	where (count(Purchase) >= 2)   && xss@@.ddx == 23 || xz@32.zx == -4 
+	where 91 * 32 + 1 && (2 || 3) || 22 && (33 || 55)
+	//(Purchase$$.Location - Purchase$1.Location > 200)
+	in [ 1 hour ];
+}
+
+
+external int TOTAL_AMOUNT = 100;
+external pos POSITION = 34.3\34.2\4.4;
+
+
+
+
+event YES 
+{
+}
+
+
+event Withdrawal	// root-event 
+{
+	
+	use 
+	{
+		int  Type, 
+		int  Amount, 
+		int CustomerId 
+	};
+	
+}
+
+
+event TEST 
+{
+	accept { (((zzz == ty) && (4 == 4)) || ((((4))==5))) };
+	accept { 34 == 5 };
+	accept { 34 };
+	accept { (77) };
+	accept { ((((77)))) };
+	accept { ((88)) && 99 };
+	accept { (11 || 22) };
+
+}
+	
+
+
+
+
+event ATMWithdrawal  // pseudo-event 
+{
+	accept { ((((Typexxxx)) != 2) || (A==3))  };
+}
+
+
+event CheckWithdrawal
+{
+	accept { ( (Y != 3) && ( (Type != 3) && (Yss != 3) ) ) };
+}
+

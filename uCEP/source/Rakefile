@@ -1,0 +1,51 @@
+require 'rake/clean'
+
+# Env. based configuration of Arch: [x86|x86_64] and Build: [Debug|Release]
+ARCH = ENV['CEP_ARCH'] ? ENV['CEP_ARCH'] : "x86_64"
+BUILD = ENV['CEP_BUILD'] ? ENV['CEP_BUILD'] : "Debug"
+DIR = File.join("Bin", ARCH, BUILD)
+
+# Compiler declaration, compilation flags and external libraries
+COMPILER = "g++ "
+DFLAGS = "-Wall -g -std=c++11 -DNO_SSL -fPIC "
+
+#MQTT
+#DFLAGS = "-Wall -g -std=c++11 -DNO_SSL -fPIC  -DMQTT"
+
+LIBS = "-pthread "
+#MQTT
+#LIBS = "-pthread  -lmosquitto"
+
+
+
+# Definition of build artifacts. Plug-ins are resolved automatically
+APP = "bcep"
+
+# Source locations for bcep
+SRC = FileList['src/**/*.cpp'].exclude('**/Main.cpp')
+
+# Cleaning tasks 
+CLEAN.include(FileList[DIR + '/**/*.o'], APP)
+CLOBBER.include(APP)
+
+# returns required object files that needs to be compiled
+def GetObjFiles(sources)
+    $OBJ = Hash[sources.collect{|f| [File.join(DIR, File.basename(f.ext('.o'))), f]}]
+    return $OBJ.keys
+end
+
+desc "Compiles bcep application"
+task :default => [APP]
+
+desc "Compiles bcep application"
+task :build => APP
+
+rule '.o' => lambda{|o| $OBJ[o]} do |t|
+    sh "#{COMPILER} #{DFLAGS} -c -o #{t.name} #{t.source}"
+end
+
+file APP => GetObjFiles(SRC) do |t|
+    sh "#{COMPILER} #{$OBJ.keys.join(' ')} -o #{t.name} #{LIBS}"
+end
+
+
